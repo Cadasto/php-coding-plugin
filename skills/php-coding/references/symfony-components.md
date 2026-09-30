@@ -30,7 +30,7 @@ This file targets **Symfony 8.1**. Its components require `php >= 8.4.1`, so a m
 
 - **Arrays come from `all($key)`.** `$request->query->get('ids')` throws `BadRequestException` when the value is an array (`?ids[]=1`). `all('ids')` returns the array, or `[]` when the key is absent (<https://symfony.com/doc/current/components/http_foundation.html>, <https://github.com/symfony/symfony/blob/v8.1.8/src/Symfony/Component/HttpFoundation/InputBag.php>).
 - **Typed getters throw, they do not fall back.** On `query` and `request` (both `InputBag`), `getInt()`, `getBoolean()`, and `getEnum()` throw `BadRequestException` for a value they cannot convert. The default applies only when the key is absent (<https://github.com/symfony/symfony/blob/v8.1.8/src/Symfony/Component/HttpFoundation/InputBag.php>).
-- **Behind a proxy, trust it by address.** Until `Request::setTrustedProxies()` names your proxies, `getClientIp()`, `isSecure()`, and `getHost()` describe the proxy. Accept traffic only from those proxies, and enable `Request::HEADER_X_FORWARDED_HOST` only when the proxy sets that header (<https://symfony.com/doc/current/deployment/proxies.html>).
+- **Behind a proxy, trust it by address.** Until `Request::setTrustedProxies()` names the proxies, `getClientIp()`, `isSecure()`, and `getHost()` describe the proxy. Accept traffic only from those proxies, and enable `Request::HEADER_X_FORWARDED_HOST` only when the proxy sets that header (<https://symfony.com/doc/current/deployment/proxies.html>).
 
 ## EventDispatcher
 
@@ -46,7 +46,7 @@ This file targets **Symfony 8.1**. Its components require `php >= 8.4.1`, so a m
 ## Dotenv
 
 - **Read `$_ENV` or `$_SERVER`, not `getenv()`.** `usePutenv` defaults to `false`, so loaded values never reach `getenv()`. Call `usePutenv()` only when a library requires it (<https://github.com/symfony/dotenv>, <https://github.com/symfony/symfony/blob/v8.1.8/src/Symfony/Component/Dotenv/Dotenv.php>).
-- **Real environment variables win.** `load()` and `loadEnv()` skip a name already set in the environment unless you call `overload()` or pass `$overrideExistingVars = true` (<https://symfony.com/doc/current/configuration.html>, <https://github.com/symfony/symfony/blob/v8.1.8/src/Symfony/Component/Dotenv/Dotenv.php>).
+- **Real environment variables win.** `load()` and `loadEnv()` skip a name already set in the environment unless `overload()` is called or `$overrideExistingVars = true` is passed (<https://symfony.com/doc/current/configuration.html>, <https://github.com/symfony/symfony/blob/v8.1.8/src/Symfony/Component/Dotenv/Dotenv.php>).
 - **`loadEnv()` skips `.env.local` in tests.** It loads `.env`, `.env.local`, `.env.$APP_ENV`, then `.env.$APP_ENV.local`, and skips `.env.local` when the env is in `$testEnvs` (default `['test']`). Commit `.env` and `.env.$APP_ENV`, never the `.local` files (<https://symfony.com/doc/current/configuration.html>, <https://github.com/symfony/symfony/blob/v8.1.8/src/Symfony/Component/Dotenv/Dotenv.php>).
 - **`.env` files are parsed on every request.** `bootEnv()` reads a dumped `.env.local.php` first when it exists. The component's `dotenv:dump` command writes that file (<https://symfony.com/doc/current/configuration.html>, <https://github.com/symfony/symfony/blob/v8.1.8/src/Symfony/Component/Dotenv/Dotenv.php>).
 
