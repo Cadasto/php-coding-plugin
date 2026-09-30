@@ -1,6 +1,6 @@
 ---
 name: php-coding
-description: Use whenever a task writes, reviews, edits, refactors, or debugs PHP code, a .php file, a PHPUnit test, or composer.json dependencies, including a code review of pasted PHP, even when the user does not mention standards. PHP coding standards for PHP 8.4 and later, with 8.5 features as hints, PER Coding Style 3.1 through php-cs-fixer @PER-CS, PHPStan level 8, PHPUnit 12. It routes each change to the command to run and a reference to read, covering style, types and exceptions and modern idioms, PHPUnit testing, security, backward compatibility of a public API, the PSR interfaces (PSR-3, 6, 7, 11, 14, 15, 16, 17, 18, 20), the Guzzle HTTP client, Monolog logging, OpenTelemetry tracing and metrics, Slim 4 apps, and Symfony components used standalone (Console, Process, Yaml, HttpFoundation, EventDispatcher, Cache, Dotenv). Not for Laravel framework code (Laravel Boost covers it), full-stack Symfony configuration, WordPress, Drupal, or Pest.
+description: This skill should be used whenever a task writes, reviews, edits, refactors, or debugs PHP, including a pasted snippet, a .php file, a PHPUnit test, composer.json, or a question that mentions PHPStan or php-cs-fixer, even when the user does not mention standards, for example "review this method", "write a PHPUnit test", "add a Guzzle client", or "can we add a method to this interface". PHP 8.4 and later with 8.5 as hints, PER Coding Style 3.1 through php-cs-fixer @PER-CS, PHPStan level 8, PHPUnit 12. It routes each change to a command to run and a reference to read, covering style, idioms (types, comparisons, exceptions, enums), testing, security, public-API compatibility, the PSR interfaces (PSR-3, 6, 7, 11, 14, 15, 16, 17, 18, 20), Guzzle, Monolog, OpenTelemetry, Slim 4, and standalone Symfony components (Console, Process, Yaml, HttpFoundation, EventDispatcher, Cache, Dotenv). Not for Laravel framework code (Laravel Boost covers it), full-stack Symfony configuration, WordPress, Drupal, or Pest.
 ---
 
 # php-coding — PHP standards index
@@ -15,8 +15,8 @@ Map every concern the change touches to a row below. Read each mapped reference 
 | The change touches | Run | Read |
 |---|---|---|
 | layout, naming, line length, side effects in a declaring file, `switch` or closure or array formatting | `vendor/bin/php-cs-fixer fix --dry-run --diff` | [style.md](references/style.md) |
-| a type, `mixed`, a union, `never`, an array shape, a generic, `==`, `throw` or `catch`, an enum, `readonly`, a date, `match`, an 8.4 or 8.5 feature | `vendor/bin/phpstan analyse` | [idioms.md](references/idioms.md) |
-| a test, a data provider, a coverage attribute, a fixture, a guard that rejects input | `vendor/bin/phpunit` | [testing.md](references/testing.md) |
+| a type, `mixed`, a union, `never`, an array shape, a generic, `==`, `in_array()`, `json_decode()`, `throw` or `catch`, an enum or its `from()`, `readonly`, a date, `match` or `switch`, `#[\Override]`, an 8.4 or 8.5 feature | `vendor/bin/phpstan analyse` | [idioms.md](references/idioms.md) |
+| a test, a data provider, a coverage attribute, a fixture, a mock or stub, a guard that rejects input | `vendor/bin/phpunit` | [testing.md](references/testing.md) |
 | a public or protected class, interface, method signature, property, or constant that other packages use | `vendor/bin/roave-backward-compatibility-check` | [compatibility.md](references/compatibility.md) |
 | SQL, HTML output, passwords, tokens, `unserialize`, shell commands, file paths or URLs from input, XML, sessions | `composer audit` | [security.md](references/security.md) |
 | a PSR interface, with or without the `Psr\` prefix in view: `ServerRequestInterface`, `ResponseInterface`, `MiddlewareInterface`, `RequestHandlerInterface`, `LoggerInterface`, `ContainerInterface`, `ClientInterface`, `ClockInterface`, a PSR-6 or PSR-16 cache, a PSR-14 dispatcher, a PSR-17 factory | `vendor/bin/phpstan analyse` | [psr.md](references/psr.md) |
@@ -35,7 +35,7 @@ Apply these even when no reference is read:
 
 - Run `vendor/bin/php-cs-fixer fix --dry-run --diff` and `vendor/bin/phpstan analyse`. Do not hand-apply a rule either tool decides.
 - Every PHP file has `declare(strict_types=1);`. Compare with `===` and `!==`.
-- Do not swallow an exception. Chain the previous one when you translate it.
+- Do not swallow an exception. Chain the previous one when translating it.
 - Bind SQL parameters. Escape output for the context it lands in.
 - Every guard has a test that fails when the guard is removed.
 
