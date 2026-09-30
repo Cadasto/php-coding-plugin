@@ -1,0 +1,12 @@
+{
+  "name": "php-coding",
+  "version": "0.1.0",
+  "description": "Idiomatic PHP coding standards for AI assistants — PHP 8.4+, PER Coding Style, PHPStan level 8.",
+  "author": {
+    "name": "Cadasto B.V.",
+    "url": "https://github.com/Cadasto"
+  },
+  "license": "MIT",
+  "repository": "https://github.com/Cadasto/php-coding-plugin",
+  "keywords": ["php", "coding-standards", "per", "phpstan", "phpunit"]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "php-coding",
+  "version": "0.1.0",
+  "description": "Idiomatic PHP coding standards for AI assistants — PHP 8.4+, PER Coding Style, PHPStan level 8.",
+  "author": {
+    "name": "Cadasto B.V.",
+    "url": "https://github.com/Cadasto"
+  },
+  "license": "MIT",
+  "skills": "skills",
+  "agents": "agents",
+  "rules": "rules",
+  "hooks": "hooks/cursor-hooks.json"
+}

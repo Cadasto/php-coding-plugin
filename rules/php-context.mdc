@@ -1,0 +1,25 @@
+---
+description: PHP coding standards for PHP files. Mirrors the php-coding skill index. Pin PHP 8.4 with 8.5 as hints, PER Coding Style 3.1 through php-cs-fixer @PER-CS, PHPStan level 8.
+globs: ["**/*.php"]
+alwaysApply: false
+---
+
+# PHP coding standards
+
+This Cursor rule mirrors the `php-coding` skill index. Load the `php-coding` skill, then read the reference each change maps to from its `references/` directory.
+
+- **Deterministic beats prose.** If php-cs-fixer, PHPStan, PHPUnit, or `composer audit` fails the build when a rule is broken, run the tool. Do not restate the rule.
+- **The pin is PHP 8.4.** PHP 8.5 additions are hints until the repository requires them.
+
+| The change touches | Run | Read |
+|---|---|---|
+| formatting, naming, PER layout | `vendor/bin/php-cs-fixer fix --dry-run --diff` | `style.md` |
+| types, comparisons, exceptions, enums, `readonly`, 8.4 and 8.5 features | `vendor/bin/phpstan analyse` | `idioms.md` |
+| tests | `vendor/bin/phpunit` | `testing.md` |
+| a public API other packages use | `vendor/bin/roave-backward-compatibility-check` | `compatibility.md` |
+| SQL, output escaping, passwords, tokens, `unserialize`, shell, input paths or URLs | `composer audit` | `security.md` |
+| a PSR interface such as `ServerRequestInterface`, `MiddlewareInterface`, `LoggerInterface`, `ContainerInterface`, `ClientInterface`, `ClockInterface` | `vendor/bin/phpstan analyse` | `psr.md` |
+| Guzzle, Monolog, OpenTelemetry, Slim, Symfony components | none | `guzzle.md`, `monolog.md`, `opentelemetry.md`, `slim.md`, `symfony-components.md` |
+| lint config | none | the `php-lint-setup` skill |
+
+If a workflow already owns the review seat, that reviewer reads the references. Do not dispatch `php-reviewer` beside it.
