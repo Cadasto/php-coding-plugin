@@ -100,7 +100,7 @@ Update these in the same change. `scripts/validate.py` fails on the first three 
 - The table in `rules/php-context.mdc`.
 - Any `see <name>.md` mentions in other references and in `agents/php-reviewer.md`.
 - The session-start hook's package detection, for a library reference.
-- An eval case under `evals/`, with an `llm` grader, a `tool_used: Skill` grader, and a `tool_used: Read` grader on the reference with `arm: with-only`.
+- An eval case under `evals/`, with an `llm` grader, a `tool_used: Skill` grader, and a `regex` grader over `trace` that matches a `Read` or `Grep` of the reference path, with `arm: with-only` (models often grep a reference instead of reading it).
 - **README.md**, this file, and **CHANGELOG.md** (under `## [Unreleased]` once a release exists).
 
 When a dated version fact changes, follow [Refreshing a dated fact](#refreshing-a-dated-fact).

@@ -18,5 +18,5 @@ Initial plugin. Pin is PHP 8.4. Current stable recorded as PHP 8.5.11; 8.5 featu
 - Cursor rule: `rules/php-context.mdc` for `**/*.php`, mirroring the index.
 - Hooks: `session-start.sh` names the library references that match `composer.json`; `format-on-save.sh` runs php-cs-fixer on the edited file. Wired for Claude Code and Cursor.
 - References: `references/php-cs-fixer.php`, `references/phpstan.neon`, `references/rector.php`.
-- Evals: eleven `claude plugin eval` cases, each grading the answer, the skill trigger, and the reference read.
+- Evals: twelve `claude plugin eval` cases, each grading the answer, the skill trigger, and the reference read.
 - Validator: `scripts/validate.py` checks manifests and parity, kebab-case names, frontmatter, description length, reference links and orphans, and the Cursor rule mirror.

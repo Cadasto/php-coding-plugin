@@ -51,7 +51,7 @@ Applied to every line:
 
 ## Eval cases
 
-Each case is a directory with `prompt.md` and a `graders/` folder ([plugin evals](https://code.claude.com/docs/en/plugin-evals)). Write the prompt the way a user would, without naming the skill, and inline any code, since each run starts in an empty directory. Give each case three graders: an `llm` grader with concrete PASS and FAIL conditions, a `tool_used` grader that checks `php-coding` fired, and a `tool_used` grader on `Read` with `arm: with-only` that checks the right reference was read.
+Each case is a directory with `prompt.md` and a `graders/` folder ([plugin evals](https://code.claude.com/docs/en/plugin-evals)). Write the prompt the way a user would, without naming the skill, and inline any code, since each run starts in an empty directory. Give each case three graders: an `llm` grader with concrete PASS and FAIL conditions, a `tool_used` grader that checks `php-coding` fired, and a `regex` grader over `trace` with `arm: with-only` that matches a `Read` or `Grep` whose path is the reference (models often grep a reference instead of reading it; see `evals/*/graders/read-reference.md`).
 
 ## Dual-host parity
 
