@@ -6,7 +6,7 @@ This file provides guidance to AI coding assistants (Claude Code, Cursor, and co
 
 The **PHP Coding Plugin** is an AI plugin by Cadasto B.V. that teaches AI coding assistants **idiomatic PHP**: the PER rules a fixer does not settle, types, exceptions, modern idioms, PHPUnit, security, the PSR interfaces, and the libraries PHP services lean on (Guzzle, Monolog, OpenTelemetry, Slim, standalone Symfony components). It targets **both Claude Code and Cursor** from a single shared component set.
 
-> **Current status: v0.1.0, not yet published.** One knowledge skill, `php-coding`, is an index over eleven reference files. Beside it are the `/php-lint-setup` command skill, the report-only `php-reviewer` agent, the `rules/php-context.mdc` Cursor rule, `session-start` and `format-on-save` hooks, the reference lint config, and an eval suite. Everything passes `./scripts/validate.sh`. Do not assume a file is present because it is documented here. Check first.
+> **Current status: v0.1.0, released 2026-10-01.** One knowledge skill, `php-coding`, is an index over eleven reference files. Beside it are the `/php-lint-setup` command skill, the report-only `php-reviewer` agent, the `rules/php-context.mdc` Cursor rule, `session-start` and `format-on-save` hooks, the reference lint config, and an eval suite. Everything passes `./scripts/validate.sh`. Do not assume a file is present because it is documented here. Check first.
 
 ## Domain Context
 
