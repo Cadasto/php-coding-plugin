@@ -9,6 +9,8 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-10-19
+
 ### Changed
 - Agents: `php-reviewer` follows the agent description form (typical triggers, a *When to invoke* section) and reviews only `.php` files and `composer.json`, naming the other files in a diff, unread, in its closing line.
 

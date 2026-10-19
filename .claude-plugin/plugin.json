@@ -1,6 +1,6 @@
 {
   "name": "php-coding",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Idiomatic PHP coding standards for AI assistants — PHP 8.4+, PER Coding Style, PHPStan level 8.",
   "author": {
     "name": "Cadasto B.V.",
