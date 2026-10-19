@@ -7,6 +7,11 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 - Keep a Changelog: https://keepachangelog.com/en/1.1.0/
 - Semantic Versioning: https://semver.org/spec/v2.0.0.html
 
+## [Unreleased]
+
+### Changed
+- Agents: `php-reviewer` follows the agent description form (typical triggers, a *When to invoke* section) and reviews only `.php` files and `composer.json`, naming the other files in a diff, unread, in its closing line.
+
 ## [0.1.0] - 2026-10-01
 
 Initial plugin. Pin is PHP 8.4. Current stable recorded as PHP 8.5.11; 8.5 features are hints. Style is PER Coding Style 3.1.
