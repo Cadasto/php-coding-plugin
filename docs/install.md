@@ -51,4 +51,4 @@ Installing the plugin needs no PHP toolchain. Enforcement does. The pin is **PHP
 
 `/php-lint-setup` writes the reference config. Install the binaries with Composer in the target repo, for example `friendsofphp/php-cs-fixer`, `phpstan/phpstan:^2`, and `phpunit/phpunit:^12.5`. Download PHP from <https://www.php.net/downloads.php>.
 
-The format-on-save hook looks for `.php-cs-fixer.php` (or `.php-cs-fixer.dist.php`) in the working directory and for `vendor/bin/php-cs-fixer` or `php-cs-fixer` on `PATH`. It does not install them.
+The format-on-save hook looks for `.php-cs-fixer.php` (or `.php-cs-fixer.dist.php`) and `vendor/bin/php-cs-fixer` in its working directory, then for `php-cs-fixer` on `PATH`. Claude Code runs it in the session's current directory. Cursor runs it in the plugin install, so the hook changes to `CURSOR_PROJECT_DIR` first. It does not install the fixer.

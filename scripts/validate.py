@@ -8,7 +8,8 @@ Checks:
   * dual-host parity (name/version/description/author agree across manifests);
   * every component path declared in a manifest exists inside the plugin dir;
   * kebab-case directory/file names for skills, agents, commands, and rules;
-  * hook-config JSON validity when present;
+  * hook-config JSON validity when present; Cursor's file has ``"version": 1`` and
+    does not use ``${CLAUDE_PLUGIN_ROOT}``;
   * skill reference files: linked one level deep from SKILL.md, no orphans, a Contents list
     past 100 lines; the Cursor rule and agents name only references that exist;
   * SKILL.md / agent / command frontmatter — required keys, and ``name`` matching the
@@ -220,7 +221,8 @@ def validate_manifest_paths(manifest: dict, label: str):
 
 def validate_json_file(path: Path, label: str):
     if path.is_file():
-        load_json(path, label)
+        return load_json(path, label)
+    return None
 
 
 def main():
@@ -251,9 +253,20 @@ def main():
                 err(f"manifests disagree on '{field}': "
                     f"claude={claude.get(field)!r} cursor={cursor.get(field)!r}")
 
-    # Hook configs must be valid JSON when present.
+    # Hook configs must be valid JSON when present. Cursor requires "version": 1
+    # and does not set CLAUDE_PLUGIN_ROOT (https://cursor.com/docs/agent/hooks).
     validate_json_file(ROOT / "hooks" / "hooks.json", "Claude hooks")
-    validate_json_file(ROOT / "hooks" / "cursor-hooks.json", "Cursor hooks")
+    cursor_hooks = validate_json_file(ROOT / "hooks" / "cursor-hooks.json", "Cursor hooks")
+    if cursor_hooks is not None and not isinstance(cursor_hooks, dict):
+        err("hooks/cursor-hooks.json: top level must be a JSON object")
+    elif cursor_hooks is not None:
+        version = cursor_hooks.get("version")
+        # type() rather than ==, since True == 1 and 1.0 == 1 in Python.
+        if type(version) is not int or version != 1:
+            err('hooks/cursor-hooks.json: needs "version": 1, which Cursor requires of a hooks file')
+        if "CLAUDE_PLUGIN_ROOT" in json.dumps(cursor_hooks):
+            err("hooks/cursor-hooks.json: uses CLAUDE_PLUGIN_ROOT, which Cursor does not set; "
+                "keep commands relative to the plugin install")
 
     validate_skills()
     validate_md_components("agents", require_name=True, is_agent=True)

@@ -9,6 +9,14 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+### Added
+- Validator: `scripts/validate.py` fails a `hooks/cursor-hooks.json` without `"version": 1` or with `${CLAUDE_PLUGIN_ROOT}`.
+
+### Fixed
+- Hooks: on Cursor, `session-start.sh` and `format-on-save.sh` read the workspace from `CURSOR_PROJECT_DIR`, not the plugin install, and stay silent without it.
+- Hooks: on Cursor, `session-start.sh` returns its line as JSON `additional_context` and names `/php-coding`.
+- Hooks: `hooks/cursor-hooks.json` declares `"version": 1` and a `timeout` per hook.
+
 ## [0.2.0] - 2026-10-19
 
 ### Changed
