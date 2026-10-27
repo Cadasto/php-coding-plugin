@@ -12,13 +12,22 @@ Checked 2026-09-30 against php-cs-fixer 3.95.27 (`describe @PER-CS` prints `@PER
 
 ## Hook smoke tests
 
-Both scripts always exit 0. Run them from the root of a PHP project, with `P` set to this repo's path:
+Both scripts always exit 0. Run them from the root of a PHP project, with `P` set to this repo's path. Claude Code runs a hook in the project and reads plain stdout:
 
 ```bash
 P=/path/to/php-coding-plugin
-bash "$P/hooks/session-start.sh"                                                     # one standards line; nothing outside a PHP workspace
-printf '{"tool_input":{"file_path":"src/Foo.php"}}' | bash "$P/hooks/format-on-save.sh"   # Claude Code payload
-printf '{"file_path":"/abs/path/src/Foo.php"}' | bash "$P/hooks/format-on-save.sh"          # Cursor afterFileEdit payload
+bash "$P/hooks/session-start.sh"                                                         # one standards line; nothing outside a PHP workspace
+printf '{"tool_input":{"file_path":"src/Foo.php"}}' | bash "$P/hooks/format-on-save.sh"  # Claude Code payload
+```
+
+Cursor runs a plugin hook in the plugin install, with `CURSOR_PLUGIN_ROOT` and `CURSOR_PROJECT_DIR` set. Replay that from the same project root:
+
+```bash
+W="$PWD"
+(cd "$P" && CURSOR_PLUGIN_ROOT="$P" CURSOR_PROJECT_DIR="$W" bash hooks/session-start.sh) | python3 -m json.tool   # {"additional_context": "..."}
+printf '{"file_path":"%s/src/Foo.php"}' "$W" \
+  | (cd "$P" && CURSOR_PLUGIN_ROOT="$P" CURSOR_PROJECT_DIR="$W" bash hooks/format-on-save.sh)                     # Cursor afterFileEdit payload
+(cd "$P" && CURSOR_PLUGIN_ROOT="$P" bash hooks/session-start.sh)                                                 # no CURSOR_PROJECT_DIR: prints nothing
 ```
 
 With a `.php-cs-fixer.php` and a fixer binary present, the named file is reformatted. Without either, nothing happens.
@@ -45,6 +54,6 @@ Load a working copy (see [install.md](install.md)), then:
 - **`php-reviewer`** — a review request loads `php-coding`, reads the references the diff maps to, returns severity-ranked findings, and does not edit or spawn agents.
 - **`/php-lint-setup`** — writes the reference config and does not overwrite an existing file unprompted.
 - **Cursor rule** — open a `.php` file and confirm `php-context.mdc` attaches.
-- **Cursor hooks** — in a PHP workspace other than this repo, confirm the session-start line reaches the agent as `additional_context` (it names `/php-coding`) and a `.php` edit is reformatted. The formatter stays on `afterFileEdit`. The hook runs in the plugin install and reads the project from `CURSOR_PROJECT_DIR`.
+- **Cursor hooks** — in a PHP workspace other than this repo, confirm the session-start line reaches the agent as `additional_context` (it names `/php-coding`) and a `.php` edit is reformatted. Both hooks run in the plugin install and read the project from `CURSOR_PROJECT_DIR`.
 
 After editing content, reinstall or restart the session.

@@ -3,16 +3,18 @@
 # line when a PHP workspace is detected, naming the php-coding references that match
 # composer.json. Always exits 0.
 #
-# Claude Code runs the hook in the project directory and reads plain stdout.
+# Claude Code runs the hook in its current directory and reads plain stdout.
 # Cursor runs a plugin hook from the plugin install and reads additional_context
-# from JSON, so there the hook moves to CURSOR_PROJECT_DIR.
+# from JSON, so there the hook moves to CURSOR_PROJECT_DIR
+# (https://cursor.com/docs/agent/hooks).
 set -u
 
-# CURSOR_PLUGIN_ROOT is set only for a Cursor plugin hook.
+# CURSOR_PLUGIN_ROOT is set only for a Cursor plugin hook. Without CURSOR_PROJECT_DIR the hook
+# stays silent: the plugin install ships references/*.php and would read as a PHP workspace.
 cursor=""
 if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
   cursor=1
-  cd "${CURSOR_PROJECT_DIR:-.}" 2>/dev/null || exit 0
+  [ -n "${CURSOR_PROJECT_DIR:-}" ] && cd "$CURSOR_PROJECT_DIR" 2>/dev/null || exit 0
 fi
 
 is_php_workspace() {
@@ -52,7 +54,8 @@ if is_php_workspace; then
     line="$line Laravel framework code belongs to Laravel Boost."
   fi
   if [ -n "$cursor" ]; then
-    printf '{"additional_context":"%s"}\n' "$line"
+    # One JSON string: escape backslashes and double quotes.
+    printf '{"additional_context":"%s"}\n' "$(printf '%s' "$line" | sed 's/\\/\\\\/g; s/"/\\"/g')"
   else
     echo "$line"
   fi

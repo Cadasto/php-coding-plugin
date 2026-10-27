@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# PostToolUse / afterFileEdit hook (host-agnostic): format the just-edited PHP file.
+# PostToolUse (Claude Code) / afterFileEdit (Cursor) hook: format the just-edited PHP file.
 #
 # Runs `php-cs-fixer fix` on that single file when a project config is present
 # (`.php-cs-fixer.php` or `.php-cs-fixer.dist.php`) and a fixer binary is available.
@@ -8,33 +8,29 @@
 # never block an edit. The fixer owns style; this hook does not pass a second ruleset.
 #
 # File-path resolution, in order:
-#   1. $CLAUDE_FILE_PATH          — set by Claude Code for Write/Edit hooks (fast path).
-#   2. tool payload JSON on stdin — Claude (`tool_input.file_path`) or Cursor
+#   1. $CLAUDE_FILE_PATH          — explicit override for tests and manual runs; no host sets it.
+#   2. tool payload JSON on stdin — Claude Code (`tool_input.file_path`) or Cursor
 #      `afterFileEdit` (`file_path`). Extracted without a jq/python dependency.
+# A relative path resolves against the working directory: on Cursor, CURSOR_PROJECT_DIR.
 set -u
 
 f="${CLAUDE_FILE_PATH:-}"
 
-# Fall back to the JSON the host pipes in on stdin (Cursor; newer Claude payloads).
+# Otherwise read the JSON payload both hosts pipe in on stdin.
 # Guard on a non-tty stdin so a manual run without a pipe doesn't block on `cat`.
 if [ -z "$f" ] && [ ! -t 0 ]; then
   payload="$(cat)"
   f="$(printf '%s' "$payload" \
-        | grep -oE '"(file_?[Pp]ath|path)"[[:space:]]*:[[:space:]]*"[^"]+"' \
+        | grep -oE '"file_?[Pp]ath"[[:space:]]*:[[:space:]]*"[^"]+"' \
         | head -n1 \
         | sed -E 's/.*"([^"]+)"$/\1/')"
 fi
 
-# Cursor plugin hooks run in the plugin install. The fixer config and vendor
-# binary live in the workspace, which CURSOR_PROJECT_DIR names.
+# Cursor plugin hooks run in the plugin install (https://cursor.com/docs/agent/hooks). The fixer
+# config and vendor binary live in the workspace, which CURSOR_PROJECT_DIR names; without it
+# there is no workspace to format against.
 if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
-  cd "${CURSOR_PROJECT_DIR:-.}" 2>/dev/null || exit 0
-fi
-if [ -n "${CURSOR_PLUGIN_ROOT:-}" ] && [ -n "${CURSOR_PROJECT_DIR:-}" ]; then
-  case "$f" in
-    /*|"") ;;
-    *) f="${CURSOR_PROJECT_DIR%/}/$f" ;;
-  esac
+  [ -n "${CURSOR_PROJECT_DIR:-}" ] && cd "$CURSOR_PROJECT_DIR" 2>/dev/null || exit 0
 fi
 
 [ -n "$f" ] || exit 0
