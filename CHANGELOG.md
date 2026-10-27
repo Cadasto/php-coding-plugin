@@ -9,6 +9,8 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-10-27
+
 ### Added
 - Validator: `scripts/validate.py` fails a `hooks/cursor-hooks.json` without `"version": 1` or with `${CLAUDE_PLUGIN_ROOT}`.
 
