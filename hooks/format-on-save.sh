@@ -20,9 +20,21 @@ f="${CLAUDE_FILE_PATH:-}"
 if [ -z "$f" ] && [ ! -t 0 ]; then
   payload="$(cat)"
   f="$(printf '%s' "$payload" \
-        | grep -oE '"file_?[Pp]ath"[[:space:]]*:[[:space:]]*"[^"]+"' \
+        | grep -oE '"(file_?[Pp]ath|path)"[[:space:]]*:[[:space:]]*"[^"]+"' \
         | head -n1 \
         | sed -E 's/.*"([^"]+)"$/\1/')"
+fi
+
+# Cursor plugin hooks run in the plugin install. The fixer config and vendor
+# binary live in the workspace, which CURSOR_PROJECT_DIR names.
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+  cd "${CURSOR_PROJECT_DIR:-.}" 2>/dev/null || exit 0
+fi
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ] && [ -n "${CURSOR_PROJECT_DIR:-}" ]; then
+  case "$f" in
+    /*|"") ;;
+    *) f="${CURSOR_PROJECT_DIR%/}/$f" ;;
+  esac
 fi
 
 [ -n "$f" ] || exit 0

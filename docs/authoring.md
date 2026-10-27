@@ -55,7 +55,7 @@ Each case is a directory with `prompt.md` and a `graders/` folder ([plugin evals
 
 ## Dual-host parity
 
-Skills and agents are shared. The **Cursor** manifest (`.cursor-plugin/plugin.json`) declares each component path. **Claude** discovers the default folders automatically. Keep `name`, `version`, `description`, and `author` identical across the two manifests. The Claude hook command quotes the placeholder (`bash "${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh"`). The Cursor hook command is workspace-relative (`bash hooks/session-start.sh`), never `${CLAUDE_PLUGIN_ROOT}`.
+Skills and agents are shared. The **Cursor** manifest (`.cursor-plugin/plugin.json`) declares each component path. **Claude** discovers the default folders automatically. Keep `name`, `version`, `description`, and `author` identical across the two manifests. The Claude hook command quotes the placeholder (`bash "${CLAUDE_PLUGIN_ROOT}/hooks/session-start.sh"`). The Cursor hook command is relative to the plugin install (`bash hooks/session-start.sh`), never `${CLAUDE_PLUGIN_ROOT}`. `hooks/cursor-hooks.json` has `"version": 1`. The formatter stays on `afterFileEdit`.
 
 ## Before committing
 

@@ -45,6 +45,6 @@ Load a working copy (see [install.md](install.md)), then:
 - **`php-reviewer`** — a review request loads `php-coding`, reads the references the diff maps to, returns severity-ranked findings, and does not edit or spawn agents.
 - **`/php-lint-setup`** — writes the reference config and does not overwrite an existing file unprompted.
 - **Cursor rule** — open a `.php` file and confirm `php-context.mdc` attaches.
-- **Cursor hooks** — in a PHP workspace other than this repo, confirm the session-start line prints and a `.php` edit is reformatted. Cursor does not document how a plugin hook's relative command path resolves, so this is the only check that it works.
+- **Cursor hooks** — in a PHP workspace other than this repo, confirm the session-start line reaches the agent as `additional_context` (it names `/php-coding`) and a `.php` edit is reformatted. The formatter stays on `afterFileEdit`. The hook runs in the plugin install and reads the project from `CURSOR_PROJECT_DIR`.
 
 After editing content, reinstall or restart the session.

@@ -1,8 +1,19 @@
 #!/usr/bin/env bash
-# SessionStart hook (host-agnostic): print one PHP-standards context line when a PHP
-# workspace is detected, naming the php-coding references that match composer.json.
-# Always exits 0 so the assistant reads stdout and is never blocked.
+# SessionStart (Claude Code) / sessionStart (Cursor) hook: print one PHP-standards context
+# line when a PHP workspace is detected, naming the php-coding references that match
+# composer.json. Always exits 0.
+#
+# Claude Code runs the hook in the project directory and reads plain stdout.
+# Cursor runs a plugin hook from the plugin install and reads additional_context
+# from JSON, so there the hook moves to CURSOR_PROJECT_DIR.
 set -u
+
+# CURSOR_PLUGIN_ROOT is set only for a Cursor plugin hook.
+cursor=""
+if [ -n "${CURSOR_PLUGIN_ROOT:-}" ]; then
+  cursor=1
+  cd "${CURSOR_PROJECT_DIR:-.}" 2>/dev/null || exit 0
+fi
 
 is_php_workspace() {
   [ -f composer.json ] && return 0
@@ -30,13 +41,21 @@ library_refs() {
 }
 
 if is_php_workspace; then
-  line="› PHP workspace detected: php-coding standards apply (PHP 8.4 pin, PER Coding Style 3.1, php-cs-fixer @PER-CS, PHPStan level 8). Load the php-coding skill and read the reference each change maps to."
+  if [ -n "$cursor" ]; then
+    line="› PHP workspace detected: php-coding standards apply (PHP 8.4 pin, PER Coding Style 3.1, php-cs-fixer @PER-CS, PHPStan level 8). Open /php-coding and read the reference each change maps to."
+  else
+    line="› PHP workspace detected: php-coding standards apply (PHP 8.4 pin, PER Coding Style 3.1, php-cs-fixer @PER-CS, PHPStan level 8). Load the php-coding skill and read the reference each change maps to."
+  fi
   refs="$(library_refs)"
   [ -n "$refs" ] && line="$line composer.json also maps to: $refs."
   if [ -f composer.json ] && grep -q '"laravel/framework"' composer.json; then
     line="$line Laravel framework code belongs to Laravel Boost."
   fi
-  echo "$line"
+  if [ -n "$cursor" ]; then
+    printf '{"additional_context":"%s"}\n' "$line"
+  else
+    echo "$line"
+  fi
 fi
 
 exit 0

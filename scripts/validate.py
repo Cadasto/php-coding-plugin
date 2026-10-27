@@ -8,7 +8,8 @@ Checks:
   * dual-host parity (name/version/description/author agree across manifests);
   * every component path declared in a manifest exists inside the plugin dir;
   * kebab-case directory/file names for skills, agents, commands, and rules;
-  * hook-config JSON validity when present;
+  * hook-config JSON validity when present; Cursor's file has ``"version": 1`` and
+    does not use ``${CLAUDE_PLUGIN_ROOT}``;
   * skill reference files: linked one level deep from SKILL.md, no orphans, a Contents list
     past 100 lines; the Cursor rule and agents name only references that exist;
   * SKILL.md / agent / command frontmatter — required keys, and ``name`` matching the
@@ -251,9 +252,17 @@ def main():
                 err(f"manifests disagree on '{field}': "
                     f"claude={claude.get(field)!r} cursor={cursor.get(field)!r}")
 
-    # Hook configs must be valid JSON when present.
+    # Hook configs must be valid JSON when present. Cursor requires "version": 1
+    # and does not expand ${CLAUDE_PLUGIN_ROOT}.
     validate_json_file(ROOT / "hooks" / "hooks.json", "Claude hooks")
-    validate_json_file(ROOT / "hooks" / "cursor-hooks.json", "Cursor hooks")
+    cursor_hooks = load_json(ROOT / "hooks" / "cursor-hooks.json", "Cursor hooks")
+    if isinstance(cursor_hooks, dict):
+        if cursor_hooks.get("version") != 1:
+            err('hooks/cursor-hooks.json: needs "version": 1, which Cursor requires of a hooks file')
+        blob = json.dumps(cursor_hooks)
+        if "CLAUDE_PLUGIN_ROOT" in blob:
+            err("hooks/cursor-hooks.json: uses CLAUDE_PLUGIN_ROOT, which Cursor does not set; "
+                "keep commands relative to the plugin install")
 
     validate_skills()
     validate_md_components("agents", require_name=True, is_agent=True)

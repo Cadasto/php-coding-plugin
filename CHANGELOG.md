@@ -9,6 +9,9 @@ The format is based on Keep a Changelog, and this project adheres to Semantic Ve
 
 ## [Unreleased]
 
+### Fixed
+- Hooks: Cursor `session-start.sh` reads `CURSOR_PROJECT_DIR` and returns `additional_context`. `format-on-save.sh` looks for the fixer config in that directory and stays on `afterFileEdit`. `hooks/cursor-hooks.json` has `"version": 1`.
+
 ## [0.2.0] - 2026-10-19
 
 ### Changed
